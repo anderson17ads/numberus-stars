@@ -13,7 +13,14 @@ public class Enemy : MonoBehaviour
 
     private float speed;
 
+    [SerializeField]
+    private float health;
+
     private Rigidbody2D rig;
+
+    [Header("Components")]
+    [SerializeField]
+    private ParticleSystem explosionPrefab;
 
     void Start()
     {
@@ -22,9 +29,9 @@ public class Enemy : MonoBehaviour
         speed = Random.Range(speedMin, speedMax);
     }
 
-    private void OnBecameInvisible() 
+    private void Update() 
     {
-        Destroy(gameObject);
+        onDestroyWhenInvisible();
     }
 
     private void FixedUpdate() 
@@ -35,5 +42,38 @@ public class Enemy : MonoBehaviour
     private void onMove()
     {
         rig.velocity = new Vector2(0f, -speed);
+    }
+
+    public void handleHit()
+    {
+        health--;
+
+        if (health <= 0f) {
+            handleDestroy();
+        }
+    }
+
+    public void handleDestroy(bool addScore = true, bool isExplosion = true)
+    {
+        if (addScore) {
+            PlayerController.instance.score++;
+        }
+
+        if (isExplosion) {
+            ParticleSystem explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            Destroy(explosion.gameObject, 1f);
+        }
+        
+        Destroy(gameObject);
+    }
+
+    private void onDestroyWhenInvisible()
+    {
+        Vector3 objectPosition = Camera.main.WorldToViewportPoint(transform.position);
+
+        if (objectPosition.y < 0f) {
+            PlayerController.instance.healthCurrent--;
+            handleDestroy(false, false);
+        }
     }
 }

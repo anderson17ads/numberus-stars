@@ -6,29 +6,31 @@ public class EnemyController : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField]
-    private float timeToCreate;
+    private float timeInterval;
 
     private float timeCount;
 
-    [Header("Components")]
-    [SerializeField]
-    private GameObject enemyPrefab;
+    private int indexEnemy;
 
     private Vector2 viewportTop;
 
     private Vector2 viewportBottom;
 
+    [Header("Components")]
+    [SerializeField]
+    private GameObject[] enemiesPrefab;
+
     void Update()
     {
+        timeCount += Time.deltaTime;
+        
         onCreate();
         onViewportPosition();
     }
 
     private void onCreate()
     {
-        timeCount += Time.deltaTime;
-
-        if (timeCount < timeToCreate) {
+        if (timeCount < timeInterval) {
             return;
         }
         
@@ -37,7 +39,9 @@ public class EnemyController : MonoBehaviour
             viewportTop.y
         );
 
-        Instantiate(enemyPrefab, position, Quaternion.identity);
+        indexEnemy = Random.Range(0, enemiesPrefab.Length);
+
+        Instantiate(enemiesPrefab[indexEnemy], position, Quaternion.identity);
 
         timeCount = 0f;
     }

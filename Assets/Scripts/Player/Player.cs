@@ -38,4 +38,12 @@ public class Player : MonoBehaviour
     {
         rig.MovePosition(rig.position + inputDirection * speed * Time.fixedDeltaTime);
     }
+
+    private void OnTriggerEnter2D(Collider2D collision) 
+    {
+        if (collision.CompareTag("Enemy")) {
+            collision.GetComponent<Enemy>().handleDestroy(false);
+            PlayerController.instance.healthCurrent--;
+        }
+    }
 }
