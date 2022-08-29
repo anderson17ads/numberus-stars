@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+enum PlayerConstants
+{
+    SCORE,
+    BETTER_SCORE,
+}
+
 public class PlayerController : MonoBehaviour
 {
     [Header("Score")]
     [SerializeField]
     private Text scoreText;
-    
-    private int _score;
 
     [Header("Health")]
     [SerializeField]
@@ -24,8 +28,21 @@ public class PlayerController : MonoBehaviour
     
     public int score
     {
-        get { return _score; }
-        set { _score = value; }
+        get { return PlayerPrefs.GetInt(PlayerConstants.SCORE.ToString()); }
+        
+        set { 
+            PlayerPrefs.SetInt(PlayerConstants.SCORE.ToString(), value);
+
+            if (score > betterScore) {
+                betterScore = score;
+            }
+        }
+    }
+
+    public int betterScore
+    {
+        get { return PlayerPrefs.GetInt(PlayerConstants.BETTER_SCORE.ToString()); }
+        set { PlayerPrefs.SetInt(PlayerConstants.BETTER_SCORE.ToString(), value); }
     }
 
     public float healthCurrent
@@ -46,6 +63,8 @@ public class PlayerController : MonoBehaviour
         _healthCurrent = _healthTotal;
 
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        PlayerPrefs.SetInt(PlayerConstants.SCORE.ToString(), 0);
     }
 
     private void Update() 
