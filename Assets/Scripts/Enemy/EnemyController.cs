@@ -12,10 +12,6 @@ public class EnemyController : MonoBehaviour
 
     private int indexEnemy;
 
-    private Vector2 viewportTop;
-
-    private Vector2 viewportBottom;
-
     [Header("Components")]
     [SerializeField]
     private GameObject[] enemiesPrefab;
@@ -25,7 +21,6 @@ public class EnemyController : MonoBehaviour
         timeCount += Time.deltaTime;
         
         onCreate();
-        onViewportPosition();
     }
 
     private void onCreate()
@@ -33,22 +28,43 @@ public class EnemyController : MonoBehaviour
         if (timeCount < timeInterval) {
             return;
         }
+
+        // Viewport Positions
+        Vector2 viewportTop = Camera.main.ViewportToWorldPoint(Vector2.one);
+        Vector2 viewportBottom = Camera.main.ViewportToWorldPoint(Vector2.zero);
+
+        // Position Current
+        float positionCurrent = Random.Range(viewportBottom.x, viewportTop.x);
+        
+        // Enemy Current
+        int indexEnemy = Random.Range(0, enemiesPrefab.Length);
+        GameObject enemyCurrent = enemiesPrefab[indexEnemy];
+
+        // Sprite Size
+        SpriteRenderer spriteRenderer = enemyCurrent.GetComponent<SpriteRenderer>();
+        Vector3 spriteSize = spriteRenderer.bounds.size;
+
+        float spriteSizeWidthHalf = spriteSize.x / 2f;
+
+        // Viewport Points Horizontal
+        float viewportLeftPoint = positionCurrent - spriteSizeWidthHalf;
+        float viewportRigthPoint = positionCurrent + spriteSizeWidthHalf;
+
+        if (viewportLeftPoint < viewportBottom.x) {
+            positionCurrent = viewportBottom.x + spriteSizeWidthHalf;
+        }
+
+        if (viewportRigthPoint > viewportTop.x) {
+            positionCurrent = viewportTop.x - spriteSizeWidthHalf;
+        }
         
         Vector2 position = new Vector2(
-            Random.Range(viewportBottom.x, viewportTop.x), 
+            positionCurrent, 
             viewportTop.y
         );
 
-        indexEnemy = Random.Range(0, enemiesPrefab.Length);
-
-        Instantiate(enemiesPrefab[indexEnemy], position, Quaternion.identity);
+        Instantiate(enemyCurrent, position, Quaternion.identity);
 
         timeCount = 0f;
-    }
-
-    private void onViewportPosition()
-    {
-        viewportTop = Camera.main.ViewportToWorldPoint(new Vector2(1, 1));
-        viewportBottom = Camera.main.ViewportToWorldPoint(new Vector2(0, 0));
     }
 }
