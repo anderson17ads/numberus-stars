@@ -174,3 +174,5 @@ MonoBehaviour:
   speedMax: 5
   health: 1
   explosionPrefab: {fileID: 7952540023182803647, guid: f1c5388fe2a62e06b82e1eab7ba52f24, type: 3}
+  itemHealthPrefab: {fileID: 5402725169352921323, guid: 9691c347c2438c730a3f481d89a50c5e, type: 3}
+  changeItemHealthPrefab: 60

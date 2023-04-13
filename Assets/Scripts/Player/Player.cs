@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -43,7 +41,16 @@ public class Player : MonoBehaviour
     {
         if (collision.CompareTag("Enemy")) {
             collision.GetComponent<Enemy>().handleDestroy(false);
+            
             PlayerController.instance.healthCurrent--;
+        }
+
+        if (collision.CompareTag("ItemHealth")) {
+            ItemHealth itemHealth = collision.GetComponent<ItemHealth>();
+            
+            PlayerController.instance.healthCurrent += itemHealth.health;
+            
+            itemHealth.handleDestroy();
         }
     }
 }

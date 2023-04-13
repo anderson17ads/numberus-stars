@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -48,7 +46,12 @@ public class PlayerController : MonoBehaviour
     public float healthCurrent
     {
         get { return _healthCurrent; }
-        set { _healthCurrent = value; }
+        
+        set { 
+            if (value <= _healthTotal) {
+                _healthCurrent = value;
+            }
+        }
     }
 
     public static PlayerController instance;
@@ -76,7 +79,7 @@ public class PlayerController : MonoBehaviour
         healthBar.fillAmount = _healthCurrent / _healthTotal;
 
         if (_healthCurrent <= 0) {
-            GameController.instance.gameOver();
+            // GameController.instance.gameOver();
         }
 
         // Limit Player in viewport

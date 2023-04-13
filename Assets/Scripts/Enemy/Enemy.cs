@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -21,6 +19,14 @@ public class Enemy : MonoBehaviour
     [Header("Components")]
     [SerializeField]
     private ParticleSystem explosionPrefab;
+
+    [Header("Item Health")]
+    [SerializeField]
+    private GameObject itemHealthPrefab;
+
+    [SerializeField]
+    [Range(0, 100)]
+    private float changeItemHealthPrefab;
 
     void Start()
     {
@@ -57,6 +63,7 @@ public class Enemy : MonoBehaviour
     {
         if (addScore) {
             PlayerController.instance.score++;
+            onCreateItemHealth();
         }
 
         if (isExplosion) {
@@ -74,6 +81,15 @@ public class Enemy : MonoBehaviour
         if (objectPosition.y < 0f) {
             PlayerController.instance.healthCurrent--;
             handleDestroy(false, false);
+        }
+    }
+
+    private void onCreateItemHealth()
+    {
+        float percentage = Random.Range(0f, 100f);
+
+        if (percentage <= changeItemHealthPrefab) {
+            Instantiate(itemHealthPrefab, transform.position, Quaternion.identity);
         }
     }
 }
